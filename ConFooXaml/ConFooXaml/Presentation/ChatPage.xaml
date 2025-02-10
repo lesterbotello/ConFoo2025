@@ -1,0 +1,156 @@
+﻿<Page
+    x:Class="ConFooXaml.Presentation.ChatPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ConFooXaml.Presentation"
+    xmlns:behaviors="using:ConFooXaml.Behaviors"
+    xmlns:utu="using:Uno.Toolkit.UI"
+    xmlns:unorx="using:Uno.Extensions.Reactive.UI"
+    xmlns:models="using:ConFooXaml.Models"
+    xmlns:presentation="using:ConFooXaml.Presentation"
+    NavigationCacheMode="Required">
+
+    <Page.Resources>
+        <!-- ListView Style -->
+        <Style x:Key="ListViewStyle"
+               TargetType="ListView">
+            <Setter Property="behaviors:ScrollToBottomBehavior.IsEnabled"
+                    Value="True" />
+            <Setter Property="behaviors:ReversedPointerWheel.IsEnabled"
+                    Value="True" />
+        </Style>
+
+        <!-- Message Templates -->
+        <DataTemplate x:Key="MyMessageTemplate"
+                      x:DataType="models:Message">
+            <StackPanel Margin="20">
+                <Border MinWidth="300"
+                        MinHeight="100"
+                        Background="DeepPink"
+                        CornerRadius="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Margin="15,10,0,0"
+                                   FontWeight="Bold"
+                                   Text="{Binding ContactName}" />
+                        <TextBlock Grid.Row="1"
+                                   Margin="15,0,0,0"
+                                   TextWrapping="WrapWholeWords"
+                                   Text="{Binding Text}" />
+                        <TextBlock Grid.Row="2"
+                                   Margin="15,0,15,15"
+                                   HorizontalAlignment="Right"
+                                   Text="{Binding UserFriendlyTimestamp}" />
+                    </Grid>
+                </Border>
+                <Polygon Margin="0,0,10,0"
+                         HorizontalAlignment="Right"
+                         Fill="DeepPink"
+                         Points="0,0 10,0 10,10" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="OtherMessageTemplate"
+                      x:DataType="models:Message">
+            <StackPanel Margin="20">
+                <Border MinWidth="300"
+                        MinHeight="100"
+                        Background="DeepSkyBlue"
+                        CornerRadius="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Margin="15,10,0,0"
+                                   FontWeight="Bold"
+                                   Text="{Binding ContactName}" />
+                        <TextBlock Grid.Row="1"
+                                   Margin="15,0,0,0"
+                                   TextWrapping="WrapWholeWords"
+                                   Text="{Binding Text}" />
+                        <TextBlock Grid.Row="2"
+                                   Margin="15,0,15,15"
+                                   HorizontalAlignment="Right"
+                                   Text="{Binding UserFriendlyTimestamp}" />
+                    </Grid>
+                </Border>
+                <Polygon Margin="10,0,0,0"
+                         HorizontalAlignment="Left"
+                         Fill="DeepSkyBlue"
+                         Points="0,0 10,0 0,10" />
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- Message Template Selector -->
+        <presentation:MessageTemplateSelector x:Key="MessageTemplateSelector"
+                                              MyMessageTemplate="{StaticResource MyMessageTemplate}"
+                                              OtherMessageTemplate="{StaticResource OtherMessageTemplate}" />
+
+        <!-- FeedView Templates -->
+        <DataTemplate x:Key="FeedViewValueTemplate"
+                      x:DataType="unorx:FeedViewState">
+            <ListView ItemsSource="{Binding Data}"
+                      Style="{StaticResource ListViewStyle}"
+                      ItemTemplateSelector="{StaticResource MessageTemplateSelector}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="FeedViewProgressTemplate"
+                      x:DataType="unorx:FeedViewState">
+            <ProgressRing />
+        </DataTemplate>
+
+        <DataTemplate x:Key="FeedViewErrorTemplate"
+                      x:DataType="unorx:FeedViewState">
+            <TextBlock Text="An error has occurred retrieving messages" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="FeedViewNoneTemplate"
+                      x:DataType="unorx:FeedViewState">
+            <TextBlock Text="No Results" />
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid x:Name="mainGrid"
+          utu:SafeArea.Insets="All">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- FeedView -->
+        <unorx:FeedView Grid.Row="0"
+                        Source="{Binding Messages}"
+                        ValueTemplate="{StaticResource FeedViewValueTemplate}"
+                        ProgressTemplate="{StaticResource FeedViewProgressTemplate}"
+                        ErrorTemplate="{StaticResource FeedViewErrorTemplate}"
+                        NoneTemplate="{StaticResource FeedViewNoneTemplate}" />
+
+        <!-- Message Input Area -->
+        <Grid Grid.Row="1"
+              x:Name="messageGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="MessageTextBox"
+                     Grid.Column="0"
+                     Margin="10,0,0,10"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding NewMessageString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     behaviors:ReversedPointerWheel.IsEnabled="True"
+                     behaviors:CommandOnKeyPressBehavior.TextBoxCommand="{Binding AddMessage}">
+            </TextBox>
+            <Button x:Name="SendButton"
+                    Grid.Column="1"
+                    Margin="10,0,10,10"
+                    Content="Send"
+                    Command="{Binding AddMessage}" />
+        </Grid>
+    </Grid>
+</Page>

@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "ConFooXaml",
+  "display": "standalone",
+  "name": "ConFooXaml",
+  "short_name": "ConFooXaml",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}
