@@ -4,18 +4,18 @@ namespace ConFooCSharp.Behaviors;
 
 public class CommandOnKeyPressBehavior
 {
-    public static Func<ICommand> GetTextBoxCommand(DependencyObject dependencyObject)
+    public static ICommand GetTextBoxCommand(DependencyObject dependencyObject)
     {
-        return (Func<ICommand>)dependencyObject.GetValue(TextBoxCommandProperty);
+        return (ICommand)dependencyObject.GetValue(TextBoxCommandProperty);
     }
 
-    public static void SetTextBoxCommand(DependencyObject dependencyObject, Func<ICommand> value)
+    public static void SetTextBoxCommand(DependencyObject dependencyObject, ICommand value)
     {
         dependencyObject.SetValue(TextBoxCommandProperty, value);
     }
 
     public static readonly DependencyProperty TextBoxCommandProperty =
-        DependencyProperty.RegisterAttached("TextBoxCommand", typeof(Func<ICommand>), typeof(CommandOnKeyPressBehavior), new PropertyMetadata(default(Func<ICommand>), OnTextBoxCommandChanged));
+        DependencyProperty.RegisterAttached("TextBoxCommand", typeof(ICommand), typeof(CommandOnKeyPressBehavior), new PropertyMetadata(default(ICommand), OnTextBoxCommandChanged));
 
     private static void OnTextBoxCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -32,7 +32,7 @@ public class CommandOnKeyPressBehavior
         if (e.Key == VirtualKey.Enter)
         {
             var textBox = sender as TextBox;
-            var command = GetTextBoxCommand(textBox).Invoke();
+            var command = GetTextBoxCommand(textBox);
             
             command.Execute(null);
         }

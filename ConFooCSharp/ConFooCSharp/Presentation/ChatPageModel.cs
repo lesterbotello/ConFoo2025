@@ -11,7 +11,7 @@ public partial record ChatPageModel
         _messageService = messageService;
     }
 
-    public IListState<Message> Messages => ListState.Async(this, ct => _messageService.GetMessages(ct));
+    public IListState<Message> Messages => ListState.Async(this, _messageService.GetMessages);
 
     public IState<string> NewMessageString => State<string>.Value(this, () => string.Empty);
 

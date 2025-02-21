@@ -1,4 +1,5 @@
 using ConFooCSharp.Behaviors;
+using ConFooCSharp.Presentation.Extensions;
 using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Foundation;
 using Windows.UI.Text;
@@ -54,13 +55,15 @@ public partial class ChatPage : Page
                             .Name(out var messageGrid)
                             .Children(
                                 new TextBox()
+                                    // This leverages the C# markup API to build our own markup extension method
+                                    // and we use it to assign an attached property easily
+                                    .TextBoxCommand(() => vm.AddMessage)
                                     .Name("MessageTextBox")
                                     .Grid(column: 0)
                                     .Margin(10, 0, 0, 10)
                                     .HorizontalAlignment(HorizontalAlignment.Stretch)
                                     .Style(new Style<TextBox>()
                                         .Setters(setters => setters
-                                            //.Add(CommandOnKeyPressBehavior.TextBoxCommandProperty, () => vm.AddMessage)
                                             .Add(ReversedPointerWheel.IsEnabledProperty, true)
                                         )
                                     )
@@ -108,7 +111,7 @@ public partial class ChatPage : Page
                             .Margin(15, 10, 0, 0)
                             .FontWeight(new FontWeight(700)) // This is "Bold" in Uno but it's marked as internal
                             .Text(x => x.Binding(() => message.ContactName)),
-                       new TextBlock()
+                        new TextBlock()
                             .Margin(15, 0, 0, 0)
                             .Grid(row: 1)
                             .TextWrapping(TextWrapping.WrapWholeWords)
